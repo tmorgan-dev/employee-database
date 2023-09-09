@@ -23,61 +23,242 @@
 // in the database
 
 const inquirer = require("inquirer")
+const mysql = require('mysql2')
 
-const questions = [
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'employee_db',
+    password: 'Ba7$$aij8fdE5bH',
+})
+
+const mainMenu = [
     {
         type: "list",
-        name: "main menu",
+        name: "mainMenu",
         message: "What would you like to do?",
-        choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"],
+        choices: ["view_all_departments", "view_all_roles", "view_all_employees", "add_a_department", "add_a_role", "add_an_employee", "update_an_employee_role"],
     },
+];
+
+const addADepartment = [
     {
         type: "input",
-        name: "new department",
+        name: "newDepartment",
         message: "What is the name of the new department?",
     },
-    {
-        type: "input",
-        name: "new role",
-        message: "What is the name of the new role?",
-    },
-    {
-        type: "input",
-        name: "new salary",
-        message: "What is the salary of the role?",
-    },    
+];
+
+// const addRole = [
+//     {
+//         type: "input",
+//         name: "newRole",
+//         message: "What is the name of the new role?",
+//     },
+//     {
+//         type: "input",
+//         name: "newSalary",
+//         message: "What is the salary of the role?",
+//     },
+//     {
+//         type: "list",
+//         name: "selectDepartment",
+//         message: "Which department does the role belong to?",
+//         choices: [],
+//     },
+// ];
+
+// const addEmployee = [
+//     {
+//         type: "input",
+//         name: "newFirstName",
+//         message: "What is the employee's first name?",
+//     },
+//     {
+//         type: "input",
+//         name: "newLastName",
+//         message: "What is the employee's last name?",
+//     },
+//     {
+//         type: "list",
+//         name: "selectRole",
+//         message: "What is the employee's role?",
+//         choices: [],
+//     },
+//     {
+//         type: "list",
+//         name: "selectManager",
+//         message: "Who is the employee's manager?",
+//         choices: [],
+//     },
+// ];
+
+const updateRole = [
     {
         type: "list",
-        name: "select department",
-        message: "Which department does the role belong to?",
+        name: "select employee",
+        message: "Which employee's role do you want to update?",
         choices: [],
-    },
-    {
-        type: "input",
-        name: "new first name",
-        message: "What is the employee's first name?",
-    },
-    {
-        type: "input",
-        name: "new last name",
-        message: "What is the employee's last name?",
     },
     {
         type: "list",
         name: "select role",
-        message: "What is the employee's role?",
-        choices: [],
-    },
-    {
-        type: "list",
-        name: "select manager",
-        message: "Who is the employee's manager?",
-        choices: [],
-    },
-    {
-        type: "list",
-        name: "update employee role",
-        message: "Who is the employee's manager?",
+        message: "Which role do you want to assign to the selected employee?",
         choices: [],
     },
 ];
+
+init();
+function init() {
+    console.log("Employee Database")
+    inquirer
+        .prompt(mainMenu)
+        .then((answers) => {
+            let options = answers.mainMenu
+            switch (options) {
+                case "view_all_departments":
+                    viewDepartments()
+                    break;
+                case "view_all_roles":
+                    viewRoles()
+                    break;
+                case "view_all_employees":
+                    viewEmployees()
+                    break;
+                case "add_a_department":
+                    addDepartment()
+                    break;
+                case "add_a_role":
+                    addRole()
+                    break;
+                case "add_an_employee":
+                    addEmployee()
+                    break;
+                case "update_an_employee_role":
+                    updateRole()
+                    break;
+            }
+        })
+
+        .catch((error) => {
+            if (error.isTtyError) {
+            } else {
+            }
+        });
+}
+
+function viewDepartments() {
+    connection.query("SELECT * FROM department", (err, res) => {
+        err ? console.log(err) : console.table(res), init()
+    })
+}
+
+function viewRoles() {
+    connection.query("SELECT * FROM role", (err, res) => {
+        err ? console.log(err) : console.table(res), init()
+    })
+}
+
+function viewEmployees() {
+    connection.query("SELECT * FROM employee", (err, res) => {
+        err ? console.log(err) : console.table(res), init()
+    })
+}
+
+function addDepartment() {
+    inquirer.prompt(addADepartment).then((answers) => {
+        let departmentName = answers.newDepartment
+        connection.query(`INSERT INTO department (name) VALUES ("${departmentName}")`, (err, res) => {
+            err ? console.log(err) : viewDepartments(), init()
+        })
+    })
+}
+
+function addRole() {
+    connection.query("SELECT * FROM department", (err, res) => {
+        if (err) {
+            console.log(err)
+            init()
+        }
+        const departments = res.map((department) => ({
+            value: department.id,
+            name: department.name,
+        }))
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "newRole",
+                message: "What is the name of the new role?",
+            },
+            {
+                type: "input",
+                name: "newSalary",
+                message: "What is the salary of the role?",
+            },
+            {
+                type: "list",
+                name: "selectDepartment",
+                message: "Which department does the role belong to?",
+                choices: departments,
+            },
+        ])
+            .then((answers) => {
+                let chosenDepartment = answers.selectDepartment;
+                let chosenRole = answers.newRole;
+                let choseSalary = answers.newSalary;
+
+                connection.query(`INSERT INTO role 
+                (title, salary, department_id)
+                VALUES 
+                ("${chosenRole}", "${choseSalary}", "${chosenDepartment}")
+            `, (err, res) => {
+                    err ? console.log(err) : viewRoles(), init()
+                })
+            })
+    })
+}
+
+function addEmployee() {
+    connection.query("SELECT * FROM role", (err, res) => {
+        if (err) {
+            console.log(err); init()
+        }
+        const roleList = res.map((role) => ({
+            value: role.id,
+            name: role.title,
+
+        }))
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "newFirstName",
+                message: "What is the employee's first name?",
+            },
+            {
+                type: "input",
+                name: "newLastName",
+                message: "What is the employee's last name?",
+            },
+            {
+                type: "list",
+                name: "selectRole",
+                message: "What is the employee's role?",
+                choices: roleList,
+            },
+        ])
+            .then((answers) => {
+                let chosenRole = answers.selectRole;
+                let employeeFirst = answers.newFirstName;
+                let employeeLast = answers.newLastName;
+
+                connection.query(`INSERT INTO employee
+                (first_name, last_name, role_id)
+                values
+                ("${employeeFirst}", "${employeeLast}", "${chosenRole}")
+            `, (err, res) => {
+                    err ? console.log(err) : viewEmployees(), init()
+                })
+            })
+
+    })
+}
