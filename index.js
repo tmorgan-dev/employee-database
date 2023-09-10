@@ -10,36 +10,13 @@ const connection = mysql.createConnection({
     password: 'Ba7$$aij8fdE5bH',
 })
 
-// Inquirer questions for the main menu and sub tasks
+// Inquirer question for the main menu
 const mainMenu = [
     {
         type: "list",
         name: "mainMenu",
         message: "What would you like to do?",
         choices: ["View All Departments", "View All Roles", "View All Employees", "Add Department", "Add Role", "Add Employee", "Update Employee Role"],
-    },
-];
-
-const addADepartment = [
-    {
-        type: "input",
-        name: "newDepartment",
-        message: "What is the name of the new department?",
-    },
-];
-
-const updateRole = [
-    {
-        type: "list",
-        name: "select employee",
-        message: "Which employee's role do you want to update?",
-        choices: [],
-    },
-    {
-        type: "list",
-        name: "select role",
-        message: "Which role do you want to assign to the selected employee?",
-        choices: [],
     },
 ];
 
@@ -102,6 +79,15 @@ function viewEmployees() {
         err ? console.log(err) : console.table(res), init()
     })
 }
+
+// Inquirer questions for adding a department
+const addADepartment = [
+    {
+        type: "input",
+        name: "newDepartment",
+        message: "What is the name of the new department?",
+    },
+];
 
 // Function to add department
 function addDepartment() {
@@ -169,7 +155,7 @@ function addEmployee() {
             }
             const employeeList = res.map((employee) => ({
                 value: employee.id,
-                name: employee.first_name,
+                name: employee.first_name + " " + employee.last_name,
             }))
             inquirer.prompt([
                 {
@@ -201,6 +187,49 @@ function addEmployee() {
                     let employeeLast = answers.newLastName;
                     let chosenEmployee = answers.selectManager;
                     connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${employeeFirst}", "${employeeLast}", "${chosenRole}", "${chosenEmployee}")`, (err, res) => {
+                        err ? console.log(err) : viewEmployees(), init()
+                    })
+                })
+        })
+    })
+}
+
+// Function to update role
+function updateRole() {
+    connection.query("SELECT * FROM employee", (err, res) => {
+        if (err) {
+            console.log(err); init()
+        }
+        const employeeList = res.map((employee) => ({
+            value: employee.id,
+            name: employee.first_name + " " + employee.last_name,
+        }))
+        connection.query("SELECT * FROM role", (err, res) => {
+            if (err) {
+                console.log(err); init()
+            }
+            const roleList = res.map((role) => ({
+                value: role.id,
+                name: role.title,
+            }))
+            inquirer.prompt([
+                {
+                    type: "list",
+                    name: "selectEmployee",
+                    message: "Who is the employee you are updating?",
+                    choices: employeeList,
+                },
+                {
+                    type: "list",
+                    name: "selectRole",
+                    message: "Who is the employee's new role?",
+                    choices: roleList,
+                },
+            ])
+                .then((answers) => {
+                    let chosenEmployee = answers.selectEmployee;
+                    let chosenRole = answers.selectRole;
+                    connection.query(`UPDATE employee SET role_id = ("${chosenRole}") WHERE id = "${chosenEmployee}"`, (err, res) => {
                         err ? console.log(err) : viewEmployees(), init()
                     })
                 })
