@@ -133,7 +133,7 @@ function addDepartment() {
     inquirer.prompt(addADepartment).then((answers) => {
         let departmentName = answers.newDepartment
         connection.query(`INSERT INTO department (name) VALUES ("${departmentName}")`, (err, res) => {
-            err ? console.log(err) : viewDepartments(), init()
+            err ? console.log(err) : console.log("Added " + departmentName + " to the database"), init()
         })
     })
 }
@@ -172,7 +172,7 @@ function addRole() {
                 let chosenRole = answers.newRole;
                 let choseSalary = answers.newSalary;
                 connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${chosenRole}", "${choseSalary}", "${chosenDepartment}")`, (err, res) => {
-                    err ? console.log(err) : viewRoles(), init()
+                    err ? console.log(err) : console.log("Added " + chosenRole + " to the database"), init()
                 })
             })
     })
@@ -226,7 +226,7 @@ function addEmployee() {
                     let employeeLast = answers.newLastName;
                     let chosenEmployee = answers.selectManager;
                     connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${employeeFirst}", "${employeeLast}", "${chosenRole}", "${chosenEmployee}")`, (err, res) => {
-                        err ? console.log(err) : viewEmployees(), init()
+                        err ? console.log(err) : console.log("Added " + employeeFirst + " " + employeeLast + " to the database"), init()
                     })
                 })
         })
@@ -269,7 +269,7 @@ function updateRole() {
                     let chosenEmployee = answers.selectEmployee;
                     let chosenRole = answers.selectRole;
                     connection.query(`UPDATE employee SET role_id = ("${chosenRole}") WHERE id = "${chosenEmployee}"`, (err, res) => {
-                        err ? console.log(err) : viewEmployees(), init()
+                        err ? console.log(err) : console.log(chosenEmployee + " updated to " + chosenRole), init()
                     })
                 })
         })
