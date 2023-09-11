@@ -20,16 +20,55 @@ const mainMenu = [
     },
 ];
 
+// Console log to create an ASCII Font Intro Screen
+console.log(`
+    EEEEEEEEEEEEEEEEEEEEEE                                            lllllll                                                                              
+    E::::::::::::::::::::E                                            l:::::l                                                                              
+    E::::::::::::::::::::E                                            l:::::l                                                                              
+    EE::::::EEEEEEEEE::::E                                            l:::::l                                                                              
+      E:::::E       EEEEEE   mmmmmmm    mmmmmmm   ppppp   ppppppppp    l::::l    ooooooooooo yyyyyyy           yyyyyyy eeeeeeeeeeee        eeeeeeeeeeee    
+      E:::::E              mm:::::::m  m:::::::mm p::::ppp:::::::::p   l::::l  oo:::::::::::ooy:::::y         y:::::yee::::::::::::ee    ee::::::::::::ee  
+      E::::::EEEEEEEEEE   m::::::::::mm::::::::::mp:::::::::::::::::p  l::::l o:::::::::::::::oy:::::y       y:::::ye::::::eeeee:::::ee e::::::eeeee:::::ee
+      E:::::::::::::::E   m::::::::::::::::::::::mpp::::::ppppp::::::p l::::l o:::::ooooo:::::o y:::::y     y:::::ye::::::e     e:::::ee::::::e     e:::::e
+      E:::::::::::::::E   m:::::mmm::::::mmm:::::m p:::::p     p:::::p l::::l o::::o     o::::o  y:::::y   y:::::y e:::::::eeeee::::::ee:::::::eeeee::::::e
+      E::::::EEEEEEEEEE   m::::m   m::::m   m::::m p:::::p     p:::::p l::::l o::::o     o::::o   y:::::y y:::::y  e:::::::::::::::::e e:::::::::::::::::e 
+      E:::::E             m::::m   m::::m   m::::m p:::::p     p:::::p l::::l o::::o     o::::o    y:::::y:::::y   e::::::eeeeeeeeeee  e::::::eeeeeeeeeee  
+      E:::::E       EEEEEEm::::m   m::::m   m::::m p:::::p    p::::::p l::::l o::::o     o::::o     y:::::::::y    e:::::::e           e:::::::e           
+    EE::::::EEEEEEEE:::::Em::::m   m::::m   m::::m p:::::ppppp:::::::pl::::::lo:::::ooooo:::::o      y:::::::y     e::::::::e          e::::::::e          
+    E::::::::::::::::::::Em::::m   m::::m   m::::m p::::::::::::::::p l::::::lo:::::::::::::::o       y:::::y       e::::::::eeeeeeee   e::::::::eeeeeeee  
+    E::::::::::::::::::::Em::::m   m::::m   m::::m p::::::::::::::pp  l::::::l oo:::::::::::oo       y:::::y         ee:::::::::::::e    ee:::::::::::::e  
+    EEEEEEEEEEEEEEEEEEEEEEmmmmmm   mmmmmm   mmmmmm p::::::pppppppp    llllllll   ooooooooooo        y:::::y            eeeeeeeeeeeeee      eeeeeeeeeeeeee  
+                                                   p:::::p                                         y:::::y                                                 
+                                                   p:::::p                                        y:::::y                                                  
+                                                  p:::::::p                                      y:::::y                                                   
+                                                  p:::::::p                                     y:::::y                                                    
+                                                  p:::::::p                      bbbbbbbb      yyyyyyy                                                     
+    DDDDDDDDDDDDD                                 ttttppppp                      b::::::b                                                                  
+    D::::::::::::DDD                           ttt:::t                           b::::::b                                                                  
+    D:::::::::::::::DD                         t:::::t                           b::::::b                                                                  
+    DDD:::::DDDDD:::::D                        t:::::t                            b:::::b                                                                  
+      D:::::D    D:::::D  aaaaaaaaaaaaa  ttttttt:::::ttttttt      aaaaaaaaaaaaa   b:::::bbbbbbbbb      aaaaaaaaaaaaa      ssssssssss       eeeeeeeeeeee    
+      D:::::D     D:::::D a::::::::::::a t:::::::::::::::::t      a::::::::::::a  b::::::::::::::bb    a::::::::::::a   ss::::::::::s    ee::::::::::::ee  
+      D:::::D     D:::::D aaaaaaaaa:::::at:::::::::::::::::t      aaaaaaaaa:::::a b::::::::::::::::b   aaaaaaaaa:::::ass:::::::::::::s  e::::::eeeee:::::ee
+      D:::::D     D:::::D          a::::atttttt:::::::tttttt               a::::a b:::::bbbbb:::::::b           a::::as::::::ssss:::::se::::::e     e:::::e
+      D:::::D     D:::::D   aaaaaaa:::::a      t:::::t              aaaaaaa:::::a b:::::b    b::::::b    aaaaaaa:::::a s:::::s  ssssss e:::::::eeeee::::::e
+      D:::::D     D:::::D aa::::::::::::a      t:::::t            aa::::::::::::a b:::::b     b:::::b  aa::::::::::::a   s::::::s      e:::::::::::::::::e 
+      D:::::D     D:::::Da::::aaaa::::::a      t:::::t           a::::aaaa::::::a b:::::b     b:::::b a::::aaaa::::::a      s::::::s   e::::::eeeeeeeeeee  
+      D:::::D    D:::::Da::::a    a:::::a      t:::::t    tttttta::::a    a:::::a b:::::b     b:::::ba::::a    a:::::assssss   s:::::s e:::::::e           
+    DDD:::::DDDDD:::::D a::::a    a:::::a      t::::::tttt:::::ta::::a    a:::::a b:::::bbbbbb::::::ba::::a    a:::::as:::::ssss::::::se::::::::e          
+    D:::::::::::::::DD  a:::::aaaa::::::a      tt::::::::::::::ta:::::aaaa::::::a b::::::::::::::::b a:::::aaaa::::::as::::::::::::::s  e::::::::eeeeeeee  
+    D::::::::::::DDD     a::::::::::aa:::a       tt:::::::::::tt a::::::::::aa:::ab:::::::::::::::b   a::::::::::aa:::as:::::::::::ss    ee:::::::::::::e  
+    DDDDDDDDDDDDD         aaaaaaaaaa  aaaa         ttttttttttt    aaaaaaaaaa  aaaabbbbbbbbbbbbbbbb     aaaaaaaaaa  aaaa sssssssssss        eeeeeeeeeeeeee`)
+
 // Initial function for main menu
 init();
 function init() {
-    console.log("Employee Database")
     inquirer
         .prompt(mainMenu)
         .then((answers) => {
             let options = answers.mainMenu
             switch (options) {
-                case "View all departments":
+                case "View All Departments":
                     viewDepartments()
                     break;
                 case "View All Roles":
